@@ -15,4 +15,12 @@ import '@arco-design/web-vue/es/modal/style/css';
   @apply flex flex-col;
   @apply min-h-screen;
 }
+main {
+  @apply mx-8;
+}
+@media (min-width: 1280px) {
+  main {
+    @apply mx-20;
+  }
+}
 </style>
