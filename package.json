@@ -1,0 +1,41 @@
+{
+  "name": "fanbook-bot-tools",
+  "description": "让普通人也能控制机器人",
+  "version": "0.0.0",
+  "packageManager": "pnpm@8.3.1",
+  "private": true,
+  "engines": {
+    "node": "^18.15.0"
+  },
+  "scripts": {
+    "bootstrap": "sh scripts/bootstrap.sh",
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "test": "vitest run",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "unplugin-vue-components": "^0.25.1"
+  },
+  "devDependencies": {
+    "@arco-design/web-vue": "^2.49.3",
+    "@commitlint/cli": "^17.6.7",
+    "@commitlint/config-conventional": "^17.6.7",
+    "@commitlint/types": "^17.4.4",
+    "@nuxt/test-utils": "^3.6.5",
+    "@nuxtjs/tailwindcss": "^6.8.0",
+    "@types/node": "^18.15.0",
+    "@vitejs/plugin-legacy": "^4.1.1",
+    "@vueuse/core": "^10.3.0",
+    "@vueuse/nuxt": "^10.3.0",
+    "husky": "^8.0.3",
+    "nuxt": "^3.6.2",
+    "nuxt-vitest": "^0.10.2",
+    "vitest": "^0.33.0"
+  },
+  "homepage": "https://github.com/DevOpen-Club/bot-tools",
+  "author": "DevOpen Club",
+  "license": "MIT"
+}
