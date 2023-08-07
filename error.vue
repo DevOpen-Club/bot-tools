@@ -30,7 +30,7 @@ async function handleCopy() {
         <AButton type='primary' @click='handleReport'>反馈问题</AButton>
         <AButton @click='handleBack'>返回首页</AButton>
       </ASpace>
-      <AAlert class='w-1/2 mx-auto' type='normal' title='错误信息'>
+      <AAlert class='md:w-1/2 mx-auto' type='normal' title='错误信息'>
         {{ details }}
         <template v-if='clipboard.isSupported' #action>
           <AButton size='mini' @click='handleCopy'>
