@@ -39,6 +39,14 @@ export function getCurrentBot() {
   if (!bots.value.length) throw new RequireBotError();
   return bots.value[0];
 }
+/**
+ * 获取当前机器人，不抛出错误。
+ * @returns 当前机器人，不存在则为 `undefined`
+ */
+export function getCurrentBotSafe() {
+  if (hasAnyBot()) return getCurrentBot();
+  else return undefined;
+}
 
 /**
  * 添加机器人。
@@ -51,11 +59,9 @@ export function addBot(bot: Bot) {
 
 /**
  * 切换机器人。
- * @param token 切换到的机器人 token
+ * @param index 切换到的机器人在 `bots` 中的下标
  */
-export function switchCurrentBot(token: string) {
-  const index = bots.value.findIndex((v) => v.token === token);
-  if (index === -1) throw new Error(`Cannot find bot by token "${token}"`);
+export function switchCurrentBot(index: number) {
   const arr = [...bots.value]; // 把切换的机器人移到第一位
   arr.splice(index, 1);
   arr.unshift(bots.value[index]);
