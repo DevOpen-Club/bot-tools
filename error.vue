@@ -30,10 +30,11 @@ async function handleCopy() {
         <AButton type='primary' @click='handleReport'>反馈问题</AButton>
         <AButton @click='handleBack'>返回首页</AButton>
       </ASpace>
-      <AAlert class='md:w-1/2 mx-auto' type='normal' title='错误信息'>
+      <AAlert class='md:w-1/2 mx-auto' type='normal'>
         {{ details }}
-        <template v-if='clipboard.isSupported' #action>
-          <AButton size='mini' @click='handleCopy'>
+        <template #title>
+          错误信息
+          <AButton v-if='clipboard.isSupported' class='absolute right-0' size='mini' @click='handleCopy'>
             复制
             <template v-if='copied' #icon>
               <IconCheckCircleFill />
@@ -44,3 +45,14 @@ async function handleCopy() {
     </template>
   </AResult>
 </template>
+
+<style lang="postcss" scoped>
+:deep() {
+  .arco-alert-body {
+    @apply w-full;
+  }
+  .arco-alert-content {
+    word-wrap: break-word;
+  }
+}
+</style>
