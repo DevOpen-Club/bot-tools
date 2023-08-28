@@ -1,88 +1,71 @@
-<!-- 机器人选择器，使用令牌。 -->
+<!-- 服务器选择器。 -->
 
 <script lang="ts" setup>
+import { ShallowRef } from 'vue';
 import { ValidateStatus } from '@arco-design/web-vue';
-import { Bot } from 'fanbook-api-node-sdk';
+import { Guild } from 'fanbook-api-node-sdk';
 import { FanbookApiError } from 'fanbook-api-node-sdk/es/error';
-import { ShallowRef } from 'nuxt/dist/app/compat/capi';
 
 export interface Props {
   /** 是否显示。 @default true */
   visible?: boolean;
-  /** 标题。 @default '选择机器人' */
+  /** 标题。 @default '选择服务器' */
   title?: string;
   /** 是否隐藏取消按钮。 @default true */
   showCancel?: boolean;
-  /** 
-   * 输入机器人令牌时触发。
-   * @param token 机器人令牌
-   * @returns 错误信息，无则为 `undefined` 或 `''`
-   */
-  onInput?: (token: string) => string | undefined | Promise<string | undefined>;
 }
 export type Events = {
   'update:visible': [value: boolean];
   /** 关闭选择器。 */
   close: [];
   /** 确认选择。 */
-  ok: [bot: Bot];
+  ok: [value: Guild];
   /** 取消选择。 */
   cancel: [];
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   visible: true,
   title: '选择服务器',
   showCancel: true,
 });
 const emit = defineEmits<Events>();
 
+let botId: bigint | undefined;
 const input = ref<{
-  token: string;
+  id?: bigint;
   status?: ValidateStatus;
   help?: string;
-}>({
-  token: '',
-});
-const selected: ShallowRef<Bot | undefined> = shallowRef();
+}>({});
+const selected: ShallowRef<Guild | undefined> = shallowRef();
 
-async function handleChange(v: string) {
-  input.value = { token: v, help: '', status: 'validating' };
-  const bot = new Bot(v);
-  try { // 令牌有效性校验
-    await bot.getMe();
+async function handleChange(v: bigint) {
+  selected.value = undefined; // 清除现有结果
+  if (!botId) botId = (await getCurrentBot().getMe()).id; // 无缓存，先获取缓存
+  input.value = { status: 'validating' };
+  try {
+    selected.value = await getCurrentBot().getGuild(v, botId);
+    input.value = { status: 'success' };
   } catch (e) {
     input.value.status = 'error';
     if (e instanceof FanbookApiError) {
-      input.value.help = '无效的机器人令牌';
+      input.value.help = '找不到此服务器';
     } else {
       console.error(e);
       input.value.help = '未知错误';
     }
-    return;
   }
-  if (props.onInput) { // 自定义校验
-    try {
-      const msg = await props.onInput(v);
-      if (msg) {
-        input.value.help = msg;
-        input.value.status = 'error';
-        return;
-      }
-    } catch (e) {
-      console.error(e);
-      input.value.help = '未知错误';
-      input.value.status = 'error';
-      return;
-    }
-  }
-  selected.value = bot;
-  input.value.status = 'success';
 }
 
 function handleClose() {
   emit('update:visible', false);
   emit('close');
+  input.value = {};
+  selected.value = undefined;
+}
+function handleBadInput() {
+  input.value.status = 'error';
+  input.value.help = '错误的服务器 ID';
 }
 </script>
 
@@ -100,8 +83,8 @@ function handleClose() {
     @cancel='() => emit("cancel")'
     @close='handleClose'
   >
-    <AFormItem label='机器人令牌' feedback :validate-status='input.status'>
-      <AInput v-model='input.token' allow-clear @change='handleChange' />
+    <AFormItem label='服务器 ID' feedback :validate-status='input.status'>
+      <InputBigint v-model='input.id' @change='handleChange' @error='handleBadInput' />
       <template v-if='input.help' #help>{{ input.help }}</template>
     </AFormItem>
   </AModal>

@@ -25,7 +25,7 @@
     "@vitejs/plugin-legacy": "^4.1.1",
     "@vueuse/core": "^10.3.0",
     "@vueuse/nuxt": "^10.3.0",
-    "fanbook-api-node-sdk": "^0.2.1",
+    "fanbook-api-node-sdk": "^0.3.0",
     "husky": "^8.0.3",
     "nuxt": "^3.6.2",
     "unplugin-vue-components": "^0.25.1"
