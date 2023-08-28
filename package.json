@@ -22,11 +22,13 @@
     "@commitlint/types": "^17.4.4",
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@types/node": "^18.15.0",
+    "@types/nprogress": "^0.2.0",
     "@vitejs/plugin-legacy": "^4.1.1",
     "@vueuse/core": "^10.3.0",
     "@vueuse/nuxt": "^10.3.0",
     "fanbook-api-node-sdk": "^0.2.1",
     "husky": "^8.0.3",
+    "nprogress": "^0.2.0",
     "nuxt": "^3.6.2",
     "unplugin-vue-components": "^0.25.1"
   },
