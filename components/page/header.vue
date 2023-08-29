@@ -70,9 +70,8 @@ function handleAddBot(bot: Bot) {
   <ALayoutHeader>
     <APageHeader :title='title' :show-back='showBack' @back='back'>
       <template v-if='!loading' #extra>
-        <ADropdown>
-          <FbBot v-if='info[0]' class='cursor-pointer' :info='info[0]' @click='() => navigateTo("/bot")' />
-          <AButton v-else type='primary'>添加机器人</AButton>
+        <ADropdown v-if='info[0]'>
+          <FbBot class='cursor-pointer' :info='info[0]' @click='() => navigateTo("/bot")' />
           <template #content>
             <ADsubmenu>
               切换机器人
@@ -88,6 +87,9 @@ function handleAddBot(bot: Bot) {
             </ADsubmenu>
           </template>
         </ADropdown>
+        <AButton v-else type='primary' @click='addBotOpen = true'>
+          添加机器人
+        </AButton>
       </template>
     </APageHeader>
   </ALayoutHeader>
