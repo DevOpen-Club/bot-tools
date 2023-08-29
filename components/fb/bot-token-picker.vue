@@ -32,7 +32,7 @@ export type Events = {
 
 const props = withDefaults(defineProps<Props>(), {
   visible: true,
-  title: '选择服务器',
+  title: '选择机器人',
   showCancel: true,
 });
 const emit = defineEmits<Events>();
