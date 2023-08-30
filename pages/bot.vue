@@ -17,4 +17,5 @@ onMounted(async () => {
     <ADescriptionsItem label='User ID'><Text copyable>{{ info.id }}</Text></ADescriptionsItem>
     <ADescriptionsItem label='所有者'><Text copyable>{{ info.last_name }}</Text></ADescriptionsItem>
   </ADescriptions>
+  <AEmpty v-else description='还没有机器人' />
 </template>

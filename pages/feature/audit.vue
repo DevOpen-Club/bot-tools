@@ -6,6 +6,7 @@ import { Category, CheckResultLevel, Result, checkRolePermissions } from '~/util
 
 definePageMeta({
   title: '运营风险检测',
+  middleware: ['require-bot'],
 });
 
 const status: Ref<'pre' | 'processing' | 'done'> = ref('pre');
