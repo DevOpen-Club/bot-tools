@@ -3,13 +3,16 @@ import { ShallowRef } from 'vue';
 import { Guild } from 'fanbook-api-node-sdk';
 import { getGuildRoles } from '~/utils/fanbook';
 import { Category, CheckResultLevel, Result, checkRolePermissions } from '~/utils/feature/audit';
+import { FanbookApiError } from 'fanbook-api-node-sdk/es/error';
 
 definePageMeta({
   title: '运营风险检测',
   middleware: ['require-bot'],
 });
 
-const status: Ref<'pre' | 'processing' | 'done'> = ref('pre');
+const status: Ref<'pre' | 'processing' | 'done' | 'failed'> = ref('pre');
+const error: ShallowRef<unknown> = shallowRef();
+const errorCode: Ref<number | undefined> = ref();
 const guildPickerOpen = ref(false);
 const result = ref<Result>({
   '身份组': [],
@@ -19,14 +22,21 @@ const guild: ShallowRef<Guild | undefined> = shallowRef();
 
 async function handleStart() {
   status.value = 'processing';
-  const roles = await getGuildRoles(BigInt(guild.value!.guild_id));
-  for (const role of roles) {
-    const res = checkRolePermissions(role);
-    if (res && res.level !== CheckResultLevel.SAFE) { // 有风险
-      result.value['身份组'].push(res);
+  try {
+    const roles = await getGuildRoles(BigInt(guild.value!.guild_id));
+    for (const role of roles) {
+      const res = checkRolePermissions(role);
+      if (res && res.level !== CheckResultLevel.SAFE) { // 有风险
+        result.value['身份组'].push(res);
+      }
     }
+    status.value = 'done';
+  } catch (e) {
+    console.error(e);
+    error.value = e;
+    if (e instanceof FanbookApiError) errorCode.value = e.code; // 保存错误码
+    status.value = 'failed';
   }
-  status.value = 'done';
 }
 function handleIgnore(tab: Category, index: number) {
   result.value[tab].splice(index, 1);
@@ -47,13 +57,19 @@ function handleIgnore(tab: Category, index: number) {
       <Paragraph margin-bottom>
         检测结果仅供参考，无任何形式的明示或暗示保证，作者和贡献者不对检测结果造成的任何直接、间接、偶发、特殊、继起或惩罚性损害负责。
       </Paragraph>
-      <AButton v-if='!guild' type='outline' long @click='() => guildPickerOpen = true'>选择服务器</AButton>
+      <AButton v-if='!guild' type='outline' long @click='() => guildPickerOpen = true'>
+        选择服务器
+      </AButton>
       <ASpace v-else direction='vertical' fill>
         <AButton type='primary' long @click='handleStart'>开始检测</AButton>
-        <AButton long @click='guild = undefined'>重新选择服务器</AButton>
+        <AButton long @click='() => guild = undefined'>重新选择服务器</AButton>
       </ASpace>
     </template>
     <div v-else-if='status === "processing"' class='w-full h-10'></div>
-    <BizAuditResult v-else :result='result' @ignore='handleIgnore' />
+    <BizAuditResult v-else-if='status === "done"' :result='result' @ignore='handleIgnore' />
+    <template v-else>
+      <AResult status='error' title='检测失败' :subtitle='errorCode ? `错误码：${errorCode}` : undefined' />
+      <FbErrorMessage class='md:w-1/2 mx-auto' :error='error' />
+    </template>
   </FeatureWrapper>
 </template>
