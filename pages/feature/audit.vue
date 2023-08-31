@@ -11,9 +11,8 @@ definePageMeta({
 });
 
 const status: Ref<'pre' | 'processing' | 'done' | 'failed'> = ref('pre');
-const errorCode: Ref<number | undefined> = ref(); // 错误码
-const errorMessage: Ref<string | undefined> = ref(); // 错误信息
-const errorCause: Ref<string | undefined> = ref(); // 诊断信息
+const error: ShallowRef<unknown> = shallowRef();
+const errorCode: Ref<number | undefined> = ref();
 const guildPickerOpen = ref(false);
 const result = ref<Result>({
   '身份组': [],
@@ -34,15 +33,8 @@ async function handleStart() {
     status.value = 'done';
   } catch (e) {
     console.error(e);
-    errorMessage.value = String(e);
-    if (e instanceof FanbookApiError && e.code) { // 接口报错
-      errorCode.value = e.code;
-      if (ErrorMessage[e.code]) { // 有诊断信息
-        errorCause.value = ErrorMessage[e.code];
-      }
-    } else { // 未知错误
-      errorMessage.value = String(e);
-    }
+    error.value = e;
+    if (e instanceof FanbookApiError) errorCode.value = e.code; // 保存错误码
     status.value = 'failed';
   }
 }
@@ -75,13 +67,9 @@ function handleIgnore(tab: Category, index: number) {
     </template>
     <div v-else-if='status === "processing"' class='w-full h-10'></div>
     <BizAuditResult v-else-if='status === "done"' :result='result' @ignore='handleIgnore' />
-    <AResult v-else status='error' title='检测失败' :subtitle='errorCode ? `错误码：${errorCode}` : undefined'>
-      <TechnologyInfo v-if='errorCause' title='可能原因' :copyable='false'>
-        {{ errorCause }}。
-      </TechnologyInfo>
-      <TechnologyInfo v-else title='错误信息'>
-        {{ errorMessage }}
-      </TechnologyInfo>
-    </AResult>
+    <template v-else>
+      <AResult status='error' title='检测失败' :subtitle='errorCode ? `错误码：${errorCode}` : undefined' />
+      <FbErrorMessage class='md:w-1/2 mx-auto' :error='error' />
+    </template>
   </FeatureWrapper>
 </template>
