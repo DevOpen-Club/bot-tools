@@ -32,8 +32,8 @@ devDependencies:
     specifier: ^10.3.0
     version: 10.3.0(nuxt@3.6.2)(vue@3.3.4)
   fanbook-api-node-sdk:
-    specifier: ^0.2.1
-    version: 0.2.1
+    specifier: ^0.3.0
+    version: 0.3.0
   husky:
     specifier: ^8.0.3
     version: 8.0.3
@@ -3400,8 +3400,8 @@ packages:
       postcss-value-parser: 4.2.0
     dev: true
 
-  /axios@1.4.0:
-    resolution: {integrity: sha512-S4XCWMEmzvo64T9GfvQDOXgYRDJ/wsSZc7Jvdgx5u1sd0JwsuPLqb3SYmusag+edF6ziyMensPVqLTSc1PiSEA==}
+  /axios@1.5.0:
+    resolution: {integrity: sha512-D4DdjDo5CY50Qms0qGQTTw6Q44jl7zRwY7bthds06pUGfChBCTcQs+N743eFWGEd6pRTMd6A+I87aWyFV5wiZQ==}
     dependencies:
       follow-redirects: 1.15.2
       form-data: 4.0.0
@@ -4584,10 +4584,10 @@ packages:
       ufo: 1.2.0
     dev: true
 
-  /fanbook-api-node-sdk@0.2.1:
-    resolution: {integrity: sha512-aOYMzzx1KrmT3+6Y7bE1j24IxoU3iqO/K6dpnS9TVxwoKE+6sKH3Jqs4qyCgJsmXCVxFGaFcZdR7rsVZ1OWQRQ==}
+  /fanbook-api-node-sdk@0.3.0:
+    resolution: {integrity: sha512-ctYONtUi8+ejjmIIyofm5xxd6umAkdZi4nl9Fc9rzEVlYvFpIA0GEqHzVhahQHla3PTC5dwelYwF7wOHHyCyfw==}
     dependencies:
-      axios: 1.4.0
+      axios: 1.5.0
       js-base64: 3.7.5
       json-bigint: 1.0.0
       mitt: 3.0.1

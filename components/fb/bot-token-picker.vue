@@ -32,7 +32,7 @@ export type Events = {
 
 const props = withDefaults(defineProps<Props>(), {
   visible: true,
-  title: '选择服务器',
+  title: '选择机器人',
   showCancel: true,
 });
 const emit = defineEmits<Events>();
@@ -46,7 +46,7 @@ const input = ref<{
 });
 const selected: ShallowRef<Bot | undefined> = shallowRef();
 
-async function handleInput(v: string) {
+async function handleChange(v: string) {
   input.value = { token: v, help: '', status: 'validating' };
   const bot = new Bot(v);
   try { // 令牌有效性校验
@@ -101,7 +101,7 @@ function handleClose() {
     @close='handleClose'
   >
     <AFormItem label='机器人令牌' feedback :validate-status='input.status'>
-      <AInput v-model='input.token' allow-clear @change='handleInput' />
+      <AInput v-model='input.token' allow-clear @change='handleChange' />
       <template v-if='input.help' #help>{{ input.help }}</template>
     </AFormItem>
   </AModal>
