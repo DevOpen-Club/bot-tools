@@ -25,6 +25,11 @@ export const PermissionText = {
   [Permission.MANAGE_CIRCLE]: '管理圈子',
 } as const;
 
+/** 错误码对应诊断信息。 */
+export const ErrorMessage: Record<number, string> = {
+  1008: '机器人不在服务器内',
+};
+
 /**
  * 获取服务器身份组列表。
  * @param guild 服务器 ID
