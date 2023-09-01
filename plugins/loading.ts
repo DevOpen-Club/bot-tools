@@ -7,7 +7,7 @@ function start() {
   else nprogress.start();
 }
 
-export default defineNuxtPlugin((app) => {
+export default defineNuxtPlugin(() => {
   nprogress.configure({ showSpinner: false, trickleSpeed: 100, speed: 1000 });
   const router = useRouter();
   const { push, replace } = useRouter();
@@ -19,7 +19,5 @@ export default defineNuxtPlugin((app) => {
     start();
     return replace(...args);
   }
-  app.hook('page:finish', () => { // hook to finish
-    nprogress.done();
-  });
+  router.afterEach(() => nprogress.done()); // hook to finish
 });
