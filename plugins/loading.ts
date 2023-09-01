@@ -1,11 +1,25 @@
 import nprogress from 'nprogress';
 
+let first = true;
+/** 开始读进度条。 */
+function start() {
+  if (first) first = false; // 首屏显示的路由不显示进度条
+  else nprogress.start();
+}
+
 export default defineNuxtPlugin((app) => {
   nprogress.configure({ showSpinner: false, trickleSpeed: 100, speed: 1000 });
-  app.hook('page:start', () => {
-    nprogress.start();
-  });
-  app.hook('page:finish', () => {
+  const router = useRouter();
+  const { push, replace } = useRouter();
+  router.push = (...args) => { // hook to push
+    start();
+    return push(...args);
+  }
+  router.replace = (...args) => { // hook to replace
+    start();
+    return replace(...args);
+  }
+  app.hook('page:finish', () => { // hook to finish
     nprogress.done();
   });
 });
