@@ -9,7 +9,7 @@ const { changelog } = useAppConfig();
 
 const TypeText: Record<ChangeType, string> = {
   feat: '功能',
-  fix: 'Bug 修复',
+  fix: '修复',
   style: '代码风格',
   refactor: '重构',
   pref: '性能',
@@ -32,28 +32,38 @@ const TypeColor: Record<ChangeType, string> = {
 </script>
 
 <template>
-  <ATypographyParagraph>
-    仅列出最近 20 条更新记录，<br />
-    完整版请前往
-    <AppLink to='https://github.com/DevOpen-Club/bot-tools/commits'>GitHub</AppLink>
-    查看。
-  </ATypographyParagraph>
-  <ATimeline>
+  <ATimeline v-if='changelog.length'>
     <ATimelineItem v-for='log in changelog'>
       <ATypographyText class='m-0' :ellipsis='{ rows: 1, css: true }'>
         <ATag :color='TypeColor[log.type]' size='small'>{{ TypeText[log.type] }}</ATag>
         {{ log.content }}
       </ATypographyText>
       <template #label>
+        <AppLink v-if='log.url' style='font-size: inherit;' :to='log.url' />
         {{ new Date(log.date).toLocaleDateString() }} by
         <AppLink style='font-size: inherit;' :to='log.author.url'>
           {{ log.author.name }}
-          <template #icon></template>
-        </AppLink>
-        <AppLink v-if='log.url' class='absolute right-0' style='font-size: inherit;' :to='log.url'>
-          <template #icon><IconGithub /></template>
+          <template #icon />
         </AppLink>
       </template>
     </ATimelineItem>
+    <ATimelineItem>
+      完整内容请前往
+      <AppLink to='https://github.com/DevOpen-Club/bot-tools/commits'>
+        GitHub
+        <template #icon><IconGithub /></template>
+      </AppLink>
+      查看。
+      <template #dot><IconMoreVertical :size='18' /></template>
+    </ATimelineItem>
   </ATimeline>
+  <ProductionOnlyInfo v-else-if='DEV' />
+  <AEmpty v-else>
+    更新记录丢了，请前往
+    <AppLink to='https://github.com/DevOpen-Club/bot-tools/commits'>
+      GitHub
+      <template #icon></template>
+    </AppLink>
+    查看。
+  </AEmpty>
 </template>

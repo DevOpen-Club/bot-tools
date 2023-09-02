@@ -20,45 +20,79 @@ function replaceLast(str: string, searchValue: string, replaceValue: string) {
   return str.replace(new RegExp(`(.*)${searchValue}`), `$1${replaceValue}`);
 }
 
+type Log = Awaited<ReturnType<typeof getLogs>>['data'][0];
+/** @returns 获取 commit log。 */
+async function getLogs() {
+  const octokit = new Octokit();
+  return await octokit.request('GET /repos/{owner}/{repo}/commits', {
+    owner: 'DevOpen-Club',
+    repo: 'bot-tools',
+    per_page: LOG_COUNT_LIMIT,
+    headers: { 'x-github-api-version': '2022-11-28' },
+  });
+}
+
+/**
+ * commit log 转更新记录。
+ * @param logs commit log
+ * @returns 更新记录
+ */
+async function toChangelog(logs: Log[]) {
+  // 解析 commit
+  return await Promise.all(logs.map(async (v): Promise<ChangeLogRecord> => {
+    const msg = await message(v.commit.message);
+    const pr = VIA_PR_TESTER.exec(msg.header)?.[0];
+    return {
+      author: {
+        name: v.commit.author!.name!,
+        url: v.author!.html_url,
+      },
+      date: v.commit.committer!.date!,
+      type: (msg.type ?? 'chore') as ChangeType,
+      content:
+        (msg.subject && pr)
+        ? replaceLast(msg.subject, ' ' + pr, '')
+        : msg.header,
+      url: pr
+        ? `https://github.com/DevOpen-Club/bot-tools/pull/${trim(pr, '(#)')}`
+        : v.html_url,
+    };
+  }));
+}
+
+/**
+ * commit log 转当前版本号。
+ * @param logs commit log
+ * @returns 当前版本号
+ */
+function toVersion(logs: Log[]) {
+  if (process.env.NODE_ENV === 'development') { // 开发环境
+    return 'DEV';
+  }
+  if (process.env.PULL_REQUEST && process.env.PULL_REQUEST !== 'false') { // 内测环境
+    return `PREVIEW${process.env.REVIEW_ID}`;
+  }
+  return logs[0].sha.substring(0, 7); // 正式环境;
+}
+
 export default defineNuxtModule({
   meta: {
     name: 'changelog',
   },
   hooks: {
     ready: async (nuxt) => {
-      const octokit = new Octokit();
-      const logs = await octokit.request('GET /repos/{owner}/{repo}/commits', {
-        owner: 'DevOpen-Club',
-        repo: 'bot-tools',
-        per_page: LOG_COUNT_LIMIT,
-        headers: { 'x-github-api-version': '2022-11-28' },
-      });
-      // 解析 commit
-      const changelog = await Promise.all(logs.data.map(async (v): Promise<ChangeLogRecord> => {
-        const msg = await message(v.commit.message);
-        const pr = VIA_PR_TESTER.exec(msg.header)?.[0];
-        return {
-          author: {
-            name: v.commit.author!.name!,
-            url: v.author!.html_url,
-          },
-          date: v.commit.committer!.date!,
-          type: (msg.type ?? 'chore') as ChangeType,
-          content:
-            (msg.subject && pr)
-            ? replaceLast(msg.subject, ' ' + pr, '')
-            : msg.header,
-          url: pr
-            ? `https://github.com/DevOpen-Club/bot-tools/pull/${trim(pr, '(#)')}`
-            : v.html_url,
-        };
-      }));
-      nuxt.options.appConfig.changelog = changelog;
-      nuxt.options.appConfig.version =
-        process.env.NODE_ENV === 'development'
-        ? 'DEV'
-        : logs.data[0].sha.substring(0, 7);
-      console.log('ℹ Building version: %s', nuxt.options.appConfig.version);
+      if (process.env.NODE_ENV !== 'development') {
+        console.log('ℹ Fetching changelog data');
+        const logs = await getLogs();
+        const changelog = await toChangelog(logs.data);
+        nuxt.options.appConfig.changelog = changelog;
+        nuxt.options.appConfig.version = toVersion(logs.data);
+        console.log('ℹ Building version: %s', nuxt.options.appConfig.version);
+      } else {
+        console.log('ℹ Starting development server');
+        nuxt.options.appConfig.changelog = [];
+        nuxt.options.appConfig.version = 'DEV';
+      }
     },
   },
 });

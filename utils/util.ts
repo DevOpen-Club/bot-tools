@@ -19,6 +19,9 @@ export type ToType<T> = {
   [K in keyof T]: T[K];
 };
 
+/** 是否开发环境。 */
+export const DEV = import.meta.env.DEV;
+
 /**
  * 尝试将字符串转为 `BigInt`，失败则返回 `undefined`。
  * @param value 要转换的字符串

@@ -6,8 +6,9 @@
       Released under the
       <AppLink to='https://opensource.org/license/mit/'>MIT License.</AppLink>
       <ADivider direction='vertical' />
+      Build
       <AppLink style='font-size: inherit;' to='/changelog'>
-        Build {{ useAppConfig().version }}
+        {{ useAppConfig().version }}
       </AppLink>
     </ATypographyParagraph>
     <ATypographyParagraph>Copyright &copy; 2023 DevOpen Club</ATypographyParagraph>
