@@ -21,8 +21,10 @@ const external = computed(() => {
 
 <template>
   <ALink v-if='external' v-bind='$attrs' :href='to.toString()' :hoverable='false' target='_blank'>
-    <slot v-if='$slots.icon' name='icon' />
-    <IconLink v-else class='mr-0.5' />
+    <span style='color: initial;'>
+      <slot v-if='$slots.icon' name='icon' />
+      <IconLink v-else class='mr-0.5' />
+    </span>
     <slot />
   </ALink>
   <RouterLink v-else v-slot='{ navigate }' :to='to' custom>
