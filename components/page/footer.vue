@@ -1,12 +1,14 @@
 <!-- 页面公共脚部。 -->
 
-<script lang="ts" setup></script>
-
 <template>
   <ALayoutFooter class='mb-1'>
     <ATypographyParagraph>
       Released under the
       <AppLink to='https://opensource.org/license/mit/'>MIT License.</AppLink>
+      <ADivider direction='vertical' />
+      <AppLink style='font-size: inherit;' to='/changelog'>
+        Build {{ useAppConfig().version }}
+      </AppLink>
     </ATypographyParagraph>
     <ATypographyParagraph>Copyright &copy; 2023 DevOpen Club</ATypographyParagraph>
   </ALayoutFooter>
@@ -20,5 +22,8 @@
   a {
     @apply text-xs;
   }
+}
+.arco-divider {
+  @apply mx-2;
 }
 </style>
