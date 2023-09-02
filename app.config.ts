@@ -1,8 +1,10 @@
 import { AppConfig } from 'nuxt/schema';
 import { markRaw } from 'vue';
-import { IconDelete, IconExclamationCircle, IconExclamationCircleFill, IconMessage } from '@arco-design/web-vue/es/icon';
+import { IconDelete, IconExclamationCircle, IconMessage } from '@arco-design/web-vue/es/icon';
 
 const config: AppConfig = defineAppConfig({
+  version: undefined as unknown as string, // 在 ~/modules/changelog.ts 中注入
+  changelog: [], // 在 ~/modules/changelog.ts 中注入
   featureEntries: {
     '互动': [{
       label: '消息互动',
