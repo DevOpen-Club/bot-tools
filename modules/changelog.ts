@@ -70,7 +70,7 @@ function toVersion(logs: Log[]) {
     return 'DEV';
   }
   if (process.env.PULL_REQUEST && process.env.PULL_REQUEST !== 'false') { // 内测环境
-    return process.env.REVIEW_ID!.replace('deploy-', ''); // deploy-preview-12 改为 preview-12
+    return `PREVIEW${process.env.REVIEW_ID}`;
   }
   return logs[0].sha.substring(0, 7); // 正式环境;
 }
