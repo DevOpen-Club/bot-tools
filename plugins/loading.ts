@@ -14,10 +14,10 @@ export default defineNuxtPlugin(() => {
   router.push = (...args) => { // hook to push
     start();
     return push(...args);
-  }
+  };
   router.replace = (...args) => { // hook to replace
     start();
     return replace(...args);
-  }
+  };
   router.afterEach(() => nprogress.done()); // hook to finish
 });

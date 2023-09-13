@@ -1,9 +1,10 @@
-import { defineNuxtModule } from 'nuxt/kit';
+import { defineNuxtModule, useLogger } from 'nuxt/kit';
 import { ChangeLogRecord, ChangeType } from '~~/global';
 import { Octokit } from 'octokit';
 import message from '@commitlint/parse';
 import { escapeRegExp, trim } from 'lodash-es';
 
+const logger = useLogger('@:changelog');
 const LOG_COUNT_LIMIT = 20;
 const VIA_PR_TESTER = /\(#\d+\)/;
 
@@ -82,14 +83,14 @@ export default defineNuxtModule({
   hooks: {
     ready: async (nuxt) => {
       if (process.env.NODE_ENV !== 'development') {
-        console.log('ℹ Fetching changelog data');
+        logger.info('Fetching changelog data');
         const logs = await getLogs();
         const changelog = await toChangelog(logs.data);
         nuxt.options.appConfig.changelog = changelog;
         nuxt.options.appConfig.version = toVersion(logs.data);
-        console.log('ℹ Building version: %s', nuxt.options.appConfig.version);
+        logger.info('Building version: %s', nuxt.options.appConfig.version);
       } else {
-        console.log('ℹ Starting development server');
+        logger.info('Starting development server');
         nuxt.options.appConfig.changelog = [];
         nuxt.options.appConfig.version = 'DEV';
       }

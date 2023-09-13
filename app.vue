@@ -3,7 +3,6 @@ import 'nprogress/nprogress.css';
 // 手动导入的组件，需要手动导入样式
 import '@arco-design/web-vue/es/message/style/css';
 import '@arco-design/web-vue/es/modal/style/css';
-import '@arco-design/web-vue/es/tooltip/style/css';
 </script>
 
 <template>
