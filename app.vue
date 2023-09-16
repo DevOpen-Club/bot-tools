@@ -16,6 +16,7 @@ const version = useAppConfig().version;
   <main v-if='$route.path.startsWith("/docs")'>
     <ContentDoc>
       <template #not-found><Page404 /></template>
+      <template #empty><AEmpty>好像应该写点什么</AEmpty></template>
     </ContentDoc>
   </main>
   <template v-else>

@@ -7,6 +7,7 @@ import path from 'path';
 let baseUrl = process.env.NUXT_APP_BASE_URL ?? '/';
 
 export default defineNuxtConfig({
+  extends: '@nuxt-themes/docus',
   ssr: false,
   app: {
     baseURL: baseUrl,
@@ -20,7 +21,7 @@ export default defineNuxtConfig({
   },
   components: false, // https://github.com/antfu/unplugin-vue-components/issues/657
   modules: [
-    (import.meta.env.PROD || true) ? '@nuxt/content' : undefined,
+    '@nuxt/content',
     '@nuxtjs/tailwindcss',
     '@vueuse/nuxt',
   ],
