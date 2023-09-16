@@ -20,6 +20,7 @@
     "@commitlint/cli": "^17.6.7",
     "@commitlint/config-conventional": "^17.6.7",
     "@commitlint/types": "^17.4.4",
+    "@nuxt/content": "^2.8.2",
     "@nuxtjs/tailwindcss": "^6.8.0",
     "@types/lodash-es": "^4.17.9",
     "@types/node": "^18.15.0",
@@ -31,7 +32,7 @@
     "husky": "^8.0.3",
     "lodash-es": "^4.17.9",
     "nprogress": "^0.2.0",
-    "nuxt": "^3.7.1",
+    "nuxt": "^3.7.3",
     "octokit": "^3.1.0",
     "unplugin-vue-components": "^0.25.1"
   },

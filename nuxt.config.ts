@@ -1,6 +1,7 @@
 import viteLegacy from '@vitejs/plugin-legacy';
 import Components from 'unplugin-vue-components/vite';
 import { ArcoResolver } from 'unplugin-vue-components/resolvers';
+import path from 'path';
 
 // base url 需要以 `/` 开头和结尾
 let baseUrl = process.env.NUXT_APP_BASE_URL ?? '/';
@@ -19,6 +20,7 @@ export default defineNuxtConfig({
   },
   components: false, // https://github.com/antfu/unplugin-vue-components/issues/657
   modules: [
+    (import.meta.env.PROD || true) ? '@nuxt/content' : undefined,
     '@nuxtjs/tailwindcss',
     '@vueuse/nuxt',
   ],
@@ -39,5 +41,14 @@ export default defineNuxtConfig({
   },
   devServer: {
     port: 5443,
+  },
+  content: {
+    sources: {
+      content: {
+        driver: 'fs',
+        prefix: '/docs',
+        base: path.resolve(__dirname, './docs'),
+      },
+    },
   },
 });

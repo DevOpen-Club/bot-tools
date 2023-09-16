@@ -3,6 +3,7 @@ import 'nprogress/nprogress.css';
 // 手动导入的组件，需要手动导入样式
 import '@arco-design/web-vue/es/message/style/css';
 import '@arco-design/web-vue/es/modal/style/css';
+import Page404 from './pages/[...slug].vue';
 
 const version = useAppConfig().version;
 </script>
@@ -10,11 +11,18 @@ const version = useAppConfig().version;
 <template>
   <AAlert v-if='version !== "DEV"' type='warning' closable banner>
     <template #icon><IconExperiment /></template>
-    版本{{ version.startsWith('PREVIEW') ? '预览' : '内测' }}中，效果请以最终发布为准。
+    版本{{ version?.startsWith('PREVIEW') ? '预览' : '内测' }}中，效果请以最终发布为准。
   </AAlert>
-  <PageHeader />
-  <ALayoutContent><NuxtPage /></ALayoutContent>
-  <PageFooter />
+  <main v-if='$route.path.startsWith("/docs")'>
+    <ContentDoc>
+      <template #not-found><Page404 /></template>
+    </ContentDoc>
+  </main>
+  <template v-else>
+    <PageHeader />
+    <ALayoutContent><NuxtPage /></ALayoutContent>
+    <PageFooter />
+  </template>
 </template>
 
 <style lang="postcss">
