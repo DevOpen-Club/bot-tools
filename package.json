@@ -9,9 +9,9 @@
   },
   "scripts": {
     "bootstrap": "sh scripts/bootstrap.sh",
-    "build": "nuxt build",
+    "build": "nuxt info && nuxt build",
     "dev": "nuxt dev",
-    "generate": "nuxt generate",
+    "generate": "nuxt info && nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
