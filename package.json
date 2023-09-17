@@ -34,7 +34,7 @@
     "lodash-es": "^4.17.9",
     "nprogress": "^0.2.0",
     "nuxt": "^3.7.3",
-    "octokit": "^3.1.0",
+    "simple-git": "^3.19.1",
     "unplugin-vue-components": "^0.25.1"
   },
   "homepage": "https://github.com/DevOpen-Club/bot-tools",

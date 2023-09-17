@@ -6,7 +6,7 @@ const FANBOOK_ICON = '<?xml version="1.0" encoding="UTF-8"?><svg xmlns:xlink="ht
 const FANBOOK_INVITE_LINK = 'https://fanbook.mobi/rjCNRFUN';
 
 const config: AppConfig = defineAppConfig({
-  version: undefined as unknown as string, // 在 ~/modules/changelog.ts 中注入
+  version: undefined, // 在 ~/modules/changelog.ts 中注入
   changelog: [], // 在 ~/modules/changelog.ts 中注入
   featureEntries: {
     '互动': [{

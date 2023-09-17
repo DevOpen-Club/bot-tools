@@ -40,11 +40,9 @@ const TypeColor: Record<ChangeType, string> = {
       </ATypographyText>
       <template #label>
         <AppLink v-if='log.url' style='font-size: inherit;' :to='log.url' />
-        {{ new Date(log.date).toLocaleDateString() }} by
-        <AppLink style='font-size: inherit;' :to='log.author.url'>
-          {{ log.author.name }}
-          <template #icon />
-        </AppLink>
+        {{ new Date(log.date).toLocaleDateString() }}
+        by
+        {{ log.author }}
       </template>
     </ATimelineItem>
     <ATimelineItem>
@@ -54,7 +52,9 @@ const TypeColor: Record<ChangeType, string> = {
         <template #icon><IconGithub /></template>
       </AppLink>
       查看。
-      <template #dot><IconMoreVertical :size='18' /></template>
+      <template #dot>
+        <IconMoreVertical style='color: var(--color-neutral-3)' :size='18' />
+      </template>
     </ATimelineItem>
   </ATimeline>
   <ProductionOnlyInfo v-else-if='DEV' />
