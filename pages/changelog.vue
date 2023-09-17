@@ -52,7 +52,9 @@ const TypeColor: Record<ChangeType, string> = {
         <template #icon><IconGithub /></template>
       </AppLink>
       查看。
-      <template #dot><IconMoreVertical :size='18' /></template>
+      <template #dot>
+        <IconMoreVertical style='color: var(--color-neutral-3)' :size='18' />
+      </template>
     </ATimelineItem>
   </ATimeline>
   <ProductionOnlyInfo v-else-if='DEV' />
