@@ -34,7 +34,7 @@ declare module '#app' {
 declare module 'nuxt/schema' {
   interface AppConfig {
     /** 版本号。 */
-    version: string;
+    version?: string;
     /** 更新记录。 */
     changelog: ChangeLogRecord[];
     /** 首页功能入口。 */
