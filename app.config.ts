@@ -3,7 +3,7 @@ import { markRaw } from 'vue';
 import { IconDelete, IconExclamationCircle, IconMessage } from '@arco-design/web-vue/es/icon';
 
 const config: AppConfig = defineAppConfig({
-  version: undefined as unknown as string, // 在 ~/modules/changelog.ts 中注入
+  version: '', // 在 ~/modules/changelog.ts 中注入
   changelog: [], // 在 ~/modules/changelog.ts 中注入
   featureEntries: {
     '互动': [{
