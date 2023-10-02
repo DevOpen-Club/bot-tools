@@ -1,6 +1,6 @@
 /** Fanbook 服务相关通用工具。 */
 
-import { GuildRole, Permission } from 'fanbook-api-node-sdk';
+import { ChannelType, GuildRole, Permission } from 'fanbook-api-node-sdk';
 
 /** 权限文案。 */
 export const PermissionText = {
@@ -29,6 +29,16 @@ export const PermissionText = {
 export const ErrorMessage: Record<number, string> = {
   1008: '机器人不在服务器内',
 };
+
+/** 支持列出的频道类型（不包括频道分类）。 */
+export const SupportedChannelType = [
+  ChannelType.TextChannel,
+  ChannelType.VoiceChannel,
+  ChannelType.VideoChannel,
+  ChannelType.LiveStreamChannel,
+  ChannelType.LinkChannel,
+  20, // 问答频道
+];
 
 /**
  * 获取服务器身份组列表。
