@@ -4,10 +4,15 @@ definePageMeta({
   middleware: ['require-bot'],
 });
 
-const bot = getCurrentBot();
-const chat = await bot.listGuildChannel(359183537678589952n);
+const guildPickerOpen = ref(false);
+const channels: Ref = ref([]);
 </script>
 
 <template>
-  <FbChannelList :channels='chat' />
+  <FbGuildPicker
+    :visible='guildPickerOpen'
+    @ok='(v) => channels = v.channels'
+  />
+  <AButton @click='() => guildPickerOpen = true'>选择服务器</AButton>
+  <FbChannelList :channels='channels' />
 </template>
