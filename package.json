@@ -27,7 +27,7 @@
     "@vitejs/plugin-legacy": "^4.1.1",
     "@vueuse/core": "^10.3.0",
     "@vueuse/nuxt": "^10.3.0",
-    "fanbook-api-node-sdk": "^0.4.1",
+    "fanbook-api-node-sdk": "^0.4.2",
     "husky": "^8.0.3",
     "lodash-es": "^4.17.9",
     "nprogress": "^0.2.0",
