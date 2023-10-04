@@ -1,6 +1,6 @@
 /** Fanbook 服务相关通用工具。 */
 
-import { ChannelType, GuildRole, Permission } from 'fanbook-api-node-sdk';
+import { Channel, ChannelType, Guild, GuildRole, Permission } from 'fanbook-api-node-sdk';
 
 /** 权限文案。 */
 export const PermissionText = {
@@ -52,5 +52,21 @@ export async function getGuildRoles(guild: bigint) {
     last = await getCurrentBot().listGuildRole(guild, last.at(-1)?.id);
     ret.push(...last);
   } while (last.length);
+  return ret;
+}
+
+/**
+ * 获取服务器频道（正确排序）。
+ * @param guild 服务器
+ * @returns 正确排序的频道
+ */
+export function toOrderedChannels(guild: Guild) {
+  const ret: Channel[] = [];
+  // @ts-ignore 上游错误
+  for (const id of guild.channel_lists as string[]) {
+    // channel_lists 里的是有序的，根据 channel_lists 中 ID 的排序找到对象即可
+    const channel = guild.channels.find((v) => v.channel_id === id);
+    if (channel) ret.push(channel); // 有些 ID 在 channel_lists 但不在 channels 中
+  }
   return ret;
 }

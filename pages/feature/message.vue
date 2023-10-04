@@ -12,12 +12,10 @@ const bot = getCurrentBot();
 let bus: Awaited<ReturnType<Bot['listen']>> | undefined;
 const guildPickerOpen = ref(false);
 const channels: Ref<Channel[]> = ref([]);
+let unmounting = false;
 
 async function connect() {
   bus = await bot.listen();
-  bus.on('connect', (ev) => {
-    console.log('WebSocket connected', ev);
-  });
   bus.on('push', handlePush);
   bus.on('error', handleError);
   bus.on('close', handleClose);
@@ -28,6 +26,7 @@ function handlePush() {
 function handleError(err: unknown) {
 }
 async function handleClose() {
+  if (unmounting) return; // 离开页面导致的连接关闭，不重连
   while (true) {
     const { close } = Message.loading({
       content: '连接中断，正在重连',
@@ -39,24 +38,25 @@ async function handleClose() {
       break;
     } catch (err) {
       console.error('Failed to reconnect', err);
-      await promiseTimeout(3000);
+      await promiseTimeout(3000); // 3s 后再次尝试重连
     }
     close();
   }
   Message.success('重连成功');
 }
 
-onMounted(() => connect().catch(handleClose));
+// onMounted(() => connect().catch(handleClose));
 onBeforeUnmount(() => {
+  unmounting = true;
   if (bus) bus.emit('close');
 });
 </script>
 
 <template>
   <FbGuildPicker
-    :visible='guildPickerOpen'
-    @ok='(v) => channels = v.channels'
+    v-model:visible='guildPickerOpen'
+    @ok='(v) => channels = toOrderedChannels(v)'
   />
   <AButton @click='() => guildPickerOpen = true'>选择服务器</AButton>
-  <FbChannelList :channels='channels' />
+  <FbGuildView :channels='channels' />
 </template>

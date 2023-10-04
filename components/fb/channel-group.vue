@@ -14,8 +14,8 @@ defineProps<Props>();
 </script>
 
 <template>
-  <ACollapseItem :key='channel.channel_id' :header='channel.name'>
-    <FbChannel v-for='item in children' :channel='item' />
+  <ACollapseItem :key='channel.channel_id' :header='channel.name' :show-expand-icon='!!children.length'>
+    <FbChannelInfo v-for='item in children' :channel='item' />
   </ACollapseItem>
 </template>
 

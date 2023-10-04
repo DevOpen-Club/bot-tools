@@ -4,45 +4,46 @@
 import { Channel, ChannelType } from 'fanbook-api-node-sdk';
 
 export interface Props {
+  /** 频道列表。 */
   channels: Channel[];
 }
 
 const props = defineProps<Props>();
 
-const unclassed = ref(true); // 是否还没有频道分组出现
-
-function getClassChannelItems(index: number) {
-  unclassed.value = false;
-  const ret: Channel[] = [];
-  ++index; // 从频道分组下第一个频道开始
-  for (; index < props.channels.length; ++index) {
-    // 已经到了下一个频道分组，这个频道分组结束了
-    if (props.channels[index].type === ChannelType.ClassChannel) break;
-    // 还没有到达下一个频道分组
-    ret.push(props.channels[index]);
+const channelsGrouped = computed(() => {
+  const ret: Array<Channel | Channel[]> = [];
+  for (const channel of props.channels) { // 放入未分类的频道
+    if (channel.type === ChannelType.ClassChannel) break;
+    ret.push(channel);
+  }
+  for (let i = ret.length; i < props.channels.length; ++i) { // 放入分类的频道
+    if (props.channels[i].type === ChannelType.ClassChannel) { // 新的分类
+      ret.push([props.channels[i]]);
+    } else { // 分类下的频道
+      (ret.at(-1) as Channel[]).push(props.channels[i]);
+    }
   }
   return ret;
-}
-
-function handleReset() {
-  unclassed.value = true;
-}
+});
 </script>
 
 <template>
   <ACollapse>
-    {{ handleReset() /** 每次重新渲染时需要重新置为 true，否则会销毁无分类的频道 */ }}
-    <template v-for='(channel, index) in channels'>
+    <template v-for='channel in channelsGrouped'>
       <FbChannelGroup
-        v-if='channel.type === ChannelType.ClassChannel'
-        :channel='channel'
-        :children='getClassChannelItems(index)'
+        v-if='Array.isArray(channel)'
+        :channel='channel[0]'
+        :children='channel.slice(1)'
       />
-      <FbChannel
-        v-else-if='unclassed && SupportedChannelType.includes(channel.type)'
-        class='mx-4 my-[2px]'
-        :channel='channel'
-      />
+      <FbChannelInfo v-else class='unclassed-channel' :channel='channel' />
     </template>
   </ACollapse>
 </template>
+
+<style lang="postcss" scoped>
+.unclassed-channel {
+  border-bottom: 1px solid var(--color-border-2);
+  @apply flex h-10 !important;
+  @apply px-4 my-[2px];
+}
+</style>
