@@ -44,7 +44,9 @@ async function handleChange(v: bigint) {
   if (!botId) botId = (await getCurrentBot().getMe()).id; // 无缓存，先获取缓存
   input.value = { status: 'validating' };
   try {
-    selected.value = await getCurrentBot().getGuild(v, botId);
+    const guild = await getCurrentBot().getGuild(v, botId);
+    if (guild.name) selected.value = guild; // name 为空表示非服务器
+    else throw new FanbookApiError(-1); // 所以要特判
     input.value = { status: 'success' };
   } catch (e) {
     input.value.status = 'error';
