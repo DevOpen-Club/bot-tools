@@ -1,6 +1,6 @@
 import { AppConfig } from 'nuxt/schema';
 import { markRaw } from 'vue';
-import { IconDelete, IconExclamationCircle, IconMessage } from '@arco-design/web-vue/es/icon';
+import { IconDelete, IconExclamationCircle, IconMessage, IconTrophy } from '@arco-design/web-vue/es/icon';
 
 const config: AppConfig = defineAppConfig({
   version: undefined, // 在 ~/modules/changelog.ts 中注入
@@ -19,6 +19,10 @@ const config: AppConfig = defineAppConfig({
       label: '风险检测',
       icon: markRaw(IconExclamationCircle),
       link: '/feature/audit',
+    }, {
+      label: '成员荣誉',
+      icon: markRaw(IconTrophy),
+      link: '/feature/credit',
     }],
   },
 });
