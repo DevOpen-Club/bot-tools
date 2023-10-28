@@ -6,7 +6,7 @@ definePageMeta({
   middleware: ['require-bot'],
 });
 
-const credit: GuildCredit = {
+const credit: Ref<GuildCredit> = ref({
   authority: {
     icon: 'https://fb-cdn.fanbook.mobi/fanbook/app/files/chatroom/image/ddf60a18da9f51be0255af8a115007ea.png',
     name: '机器人工具',
@@ -24,9 +24,12 @@ const credit: GuildCredit = {
   title: {
     img: 'https://fb-cdn.fanbook.mobi/fanbook/app/files/chatroom/image/643162c237f9fbe8c9c09a5a6b409b77.png',
   },
-};
+});
 </script>
 
 <template>
-  <FbCredit :credit='credit' />
+  <FbCredit :credit='credit' editable />
+  <TechnologyInfo title='data'>
+    {{ credit }}
+  </TechnologyInfo>
 </template>

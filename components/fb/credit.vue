@@ -2,113 +2,84 @@
 
 <script lang="ts" setup>
 import { GuildCredit } from 'fanbook-api-node-sdk';
+import { Events as AuthorityEvents } from './credit/authority.vue';
 
 export interface Props {
   credit: GuildCredit;
   editable?: boolean;
 }
-export type Events = {
-  'update:credit': [value: GuildCredit];
+export type Events = AuthorityEvents & {
+  'add-slot-row': [];
+  'remove-slot-row': [];
+  'add-slot': [];
+  'remove-slot': [];
+  'edit-slot-value': [row: number, index: number, value: string];
+  'edit-slot-label': [row: number, index: number, label: string];
+  'edit-slot-image': [row: number, index: number, url: string];
 };
 
 const props = defineProps<Props>();
 const emit = defineEmits<Events>();
 
-const data = toRef(props, 'credit');
-watch(data, (v) => emit('update:credit', v)); // data 更新后向上传递
-
-async function handleEditAuthorityIcon() {
-  if (!props.editable) return;
-  // const value = await selectImage({ title: '修改图片', defaultLink: '' });
-  // if (value) data.value.authority.icon = value;
-}
-async function handleEditSlotImage(i: number, j: number) {
-  if (!props.editable) return;
-  // const value = await selectImage({ title: '修改图片', defaultLink: '' });
-  // if (value) data.value.slots[i][j].image = value;
-}
 function handleAddSlot(row: number) {
-  data.value.slots[row].push({
+  props.credit.slots[row].push({
     img: LOGO_URL,
     value: '文字',
   });
+  emit('add-slot');
 }
 function handleRemoveSlot(row: number) {
-  data.value.slots[row].pop();
+  props.credit.slots[row].pop();
+  emit('remove-slot');
 }
 function handleAddSlotRow() {
-  const l = data.value.slots.push([])
-  handleAddSlot(l - 1);
+  emit('add-slot-row'); // 先上报添加列，再上报往列中添加插槽
+  handleAddSlot(props.credit.slots.push([]) - 1);
 }
 function handleRemoveSlotRow() {
-  data.value.slots.pop();
+  props.credit.slots.pop();
+  emit('remove-slot-row');
 }
 </script>
 
 <template>
-  <ACard v-bind='$attrs' class='rounded-lg'>
-    <ARow v-for='(slots, i) in data.slots' class='justify-center flex-col'>
-      <AScrollbar class='slot-row w-full'>
-        <div class='flex w-full overflow-auto'>
-          <div v-for='(slot, j) in slots' class='flex flex-col items-center mb-2 w-full min-w-[100px]'>
-            <AAvatar
-              v-if='slot.img'
-              class='w-[52px] h-[52px] bg-transparent'
-              :image-url='slot.img'
-              @click='() => handleEditSlotImage(i, j)'
-            >
-              <template v-if='editable' #trigger-icon>
-                <IconEdit />
-              </template>
-            </AAvatar>
-            <ATypographyParagraph
-              :editable='editable'
-              v-model:edit-text='slot.value'
-            >
-              {{ slot.value }}
-            </ATypographyParagraph>
-          </div>
-          <div v-if='editable' class='flex flex-col'>
-            <ADivider direction='vertical' />
-            <FbCreditOpButtons
-              class='flex-col'
-              add
-              :remove='slots.length > 1'
-              @add='() => handleAddSlot(i)'
-              @remove='() => handleRemoveSlot(i)'
-            />
-          </div>
+  <ACard class='rounded-lg'>
+    <ARow v-for='(slots, row) in credit.slots' class='justify-center flex-col'>
+      <div class='flex w-full overflow-auto'>
+        <FbCreditSlot
+          v-for='(slot, index) in slots'
+          class='mb-2 w-full'
+          :slot='slot'
+          :editable='editable'
+          @edit-value='(value) => emit("edit-slot-value", row, index, value)'
+          @edit-label='(label) => emit("edit-slot-label", row, index, label)'
+          @edit-image='(url) => emit("edit-slot-image", row, index, url)'
+        />
+        <div v-if='editable' class='flex flex-col'>
+          <ADivider direction='vertical' />
+          <FbCreditOpButtons
+            class='flex-col'
+            add
+            :remove='slots.length > 1'
+            @add='() => handleAddSlot(row)'
+            @remove='() => handleRemoveSlot(row)'
+          />
         </div>
-      </AScrollbar>
+      </div>
     </ARow>
     <template v-if='editable'>
       <ADivider class='mt-0 mb-2' />
       <div class='flex justify-center w-full'>
         <FbCreditOpButtons
           add
-          :remove='data.slots.length > 1'
+          :remove='credit.slots.length > 1'
           @add='handleAddSlotRow'
           @remove='handleRemoveSlotRow'
         />
       </div>
     </template>
     <template #title>
-      <AAvatar
-        class='min-w-[36px] min-h-[36px] bg-transparent'
-        :image-url='data.authority.icon'
-        @click='handleEditAuthorityIcon'
-      >
-        <template v-if='editable' #trigger-icon>
-          <IconEdit />
-        </template>
-      </AAvatar>
-      <ATypographyParagraph
-        class='inline-flex items-center ml-2 font-bold'
-        :editable='editable'
-        v-model:edit-text='data.authority.name'
-      >
-        {{ data.authority.name }}
-      </ATypographyParagraph>
+      <FbCreditAuthority :authority='credit.authority' :editable='editable' v-on='emit' />
     </template>
   </ACard>
 </template>
