@@ -14,14 +14,14 @@ export interface Props {
   /** 是否隐藏取消按钮。 @default true */
   showCancel?: boolean;
 }
-export type Events = {
-  'update:visible': [value: boolean];
+export interface Events {
+  (ev: 'update:visible', value: boolean): void;
   /** 关闭选择器。 */
-  close: [];
+  (ev: 'close'): void;
   /** 确认选择。 */
-  ok: [value: Guild];
+  (ev: 'ok', value: Guild): void;
   /** 取消选择。 */
-  cancel: [];
+  (ev: 'cancel'): void;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -78,7 +78,7 @@ function handleBadInput() {
     :closable='showCancel'
     :ok-button-props='{ disabled: !selected }'
     :esc-to-close='false'
-    @update:visible='(v) => emit("update:visible", v)'
+    @update:visible='(v: boolean) => emit("update:visible", v)'
     @ok='() => emit("ok", selected!)'
     @cancel='() => emit("cancel")'
     @close='handleClose'
