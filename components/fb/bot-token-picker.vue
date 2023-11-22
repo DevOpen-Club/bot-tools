@@ -44,7 +44,7 @@ const input = ref<{
 }>({
   token: '',
 });
-const selected: ShallowRef<Bot | undefined> = shallowRef();
+const selected: Ref<Bot | undefined> = shallowRef();
 
 async function handleChange(v: string) {
   input.value = { token: v, help: '', status: 'validating' };
@@ -95,7 +95,7 @@ function handleClose() {
     :closable='showCancel'
     :ok-button-props='{ disabled: !selected }'
     :esc-to-close='false'
-    @update:visible='(v) => emit("update:visible", v)'
+    @update:visible='(v: boolean) => emit("update:visible", v)'
     @ok='() => emit("ok", selected!)'
     @cancel='() => emit("cancel")'
     @close='handleClose'

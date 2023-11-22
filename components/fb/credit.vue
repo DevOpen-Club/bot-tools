@@ -51,9 +51,9 @@ function handleRemoveSlotRow() {
           class='mb-2 w-full'
           :slot='slot'
           :editable='editable'
-          @edit-value='(value) => emit("edit-slot-value", row, index, value)'
-          @edit-label='(label) => emit("edit-slot-label", row, index, label)'
-          @edit-image='(url) => emit("edit-slot-image", row, index, url)'
+          @edit-value='(value: string) => emit("edit-slot-value", row, index, value)'
+          @edit-label='(label: string) => emit("edit-slot-label", row, index, label)'
+          @edit-image='(url: string) => emit("edit-slot-image", row, index, url)'
         />
         <div v-if='editable' class='flex flex-col'>
           <ADivider direction='vertical' />

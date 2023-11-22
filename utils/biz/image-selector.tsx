@@ -16,7 +16,7 @@ export interface SelectImageOptions {
 export function selectImage(options?: SelectImageOptions): Promise<string | undefined> {
   return new Promise((resolve) => {
     const input = ref('');
-    const status: Ref<undefined | 'error'> = ref(undefined);
+    const status: Ref<'error' | undefined> = ref(undefined);
 
     function handleInput() {
       if (VALIDATE_REGEXP.test(input.value)) status.value = undefined;
@@ -25,7 +25,6 @@ export function selectImage(options?: SelectImageOptions): Promise<string | unde
 
     Modal.open({
       title: options?.title ?? '选择图片',
-      //@ts-ignore
       content: () => (
         <FormItem
           label='图片链接'
